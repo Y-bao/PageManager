@@ -1,59 +1,74 @@
-import resolve from "rollup-plugin-node-resolve";
-import eslint from "rollup-plugin-eslint";
-import commonjs from "rollup-plugin-commonjs";
-import babel from "rollup-plugin-babel";
-import replace from "rollup-plugin-replace";
-import postcss from "rollup-plugin-postcss";
-import simplevars from "postcss-simple-vars";
-import nested from "postcss-nested";
-import cssnext from "postcss-cssnext";
-import cssnano from "cssnano";
-import config from "../config/config.js";
+const fs = require("fs");
+const path = require("path");
+const babel = require("rollup-plugin-babel");
+const flow = require("rollup-plugin-flow-no-whitespace");
+const cjs = require("rollup-plugin-commonjs");
+const node = require("rollup-plugin-node-resolve");
+const eslint = require("rollup-plugin-eslint");
+const replace = require("rollup-plugin-replace");
+const build = require("./build");
+const version = process.env.VERSION || require("../package.json").version;
+
+const fullPath = p => path.resolve(__dirname, "../", p);
 
 const banner =
     "/*!\n" +
-    "* author: PengYuan-Jiang\n" +
-    "* email: 392579823@qq.com\n" +
+    "* page-manager.js v" +
+    version +
+    "\n" +
+    "* (c) 2018-" +
+    new Date().getFullYear() +
+    " PengYuan-Jiang\n" +
     "*/";
 
-module.exports = {
-    input: config.inputFile,
-    output: [
-        {
-            file:
-                config.outputPath +
-                "/" +
-                config.outputBaseFileName +
-                ".module.js",
-            format: "es",
-            name: config.moduleName,
-            banner: banner
-        }
-    ],
-    plugins: [
-        replace({
-            ENV: JSON.stringify(process.env.NODE_ENV || "production")
-        }),
-        postcss({
+function genConfig(opts) {
+    return {
+        input: {
+            input: fullPath("src/page-manager.js"),
             plugins: [
-                simplevars(),
-                nested(),
-                cssnext({ warnForDuplicates: false }),
-                cssnano()
-            ],
-            extensions: [".css"]
-        }),
-        resolve({
-            jsnext: true,
-            main: true,
-            browser: true
-        }),
-        eslint({
-            include: ["src/**/*.js"] // 需要检查的部分
-        }),
-        commonjs(),
-        babel({
-            exclude: "node_modules/**"
-        })
-    ]
-};
+                flow(),
+                node(),
+                eslint({
+                    include: [fullPath("src/") + "**/*.js"] // 需要检查的部分
+                }),
+                cjs(),
+                babel({
+                    exclude: "node_modules/**"
+                })
+            ]
+        },
+        output: {
+            output: opts.output,
+            format: opts.format,
+            name: "PMRouter",
+            banner,
+            min: opts.min
+        }
+    };
+}
+
+const builds = [
+    {
+        output: fullPath("dist/page-manager.js"),
+        format: "umd"
+    },
+    {
+        output: fullPath("dist/page-manager.min.js"),
+        format: "umd",
+        min: true
+    },
+    {
+        output: fullPath("dist/page-manager.common.js"),
+        format: "cjs"
+    },
+    {
+        output: fullPath("dist/page-manager.esm.js"),
+        format: "es"
+    }
+].map(genConfig);
+
+var distDir = fullPath("dist/");
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir);
+}
+build(builds);
