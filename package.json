@@ -1,7 +1,7 @@
 {
-    "name": "easy-bar",
+    "name": "ybao-page-manager",
     "version": "1.0.0",
-    "description": "",
+    "description": "vue中基于router实现的页面管理工具",
     "main": "src/index.js",
     "author": "ybao",
     "license": "ISC",
