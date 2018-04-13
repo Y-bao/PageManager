@@ -1,0 +1,11 @@
+{
+    "name": "easy-bar",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/index.js",
+    "author": "ybao",
+    "license": "ISC",
+    "dependencies": {
+        "vue-router": "^3.0.1"
+    }
+}
