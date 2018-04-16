@@ -1,5 +1,5 @@
 /*!
-* page-manager.js v1.0.1
+* page-manager.js v1.0.2
 * (c) 2018-2018 PengYuan-Jiang
 */
 /**

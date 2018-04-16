@@ -1,6 +1,6 @@
 {
     "name": "ybao-page-manager",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "vue中基于router实现的页面管理工具",
     "main": "dist/page-manager.common.js",
     "author": "ybao",

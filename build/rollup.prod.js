@@ -38,7 +38,7 @@ function genConfig(opts) {
             ]
         },
         output: {
-            output: opts.output,
+            file: opts.output,
             format: opts.format,
             name: "PMRouter",
             banner,

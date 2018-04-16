@@ -21,20 +21,22 @@ function build(builds) {
 }
 
 function buildEntry({ input, output }) {
+    var isMin = output.min;
+    delete output.min;
     return rollup
         .rollup(input)
         .then(bundle => bundle.generate(output))
         .then(({ code }) => {
-            if (output.min) {
+            if (isMin) {
                 var minified = uglify.minify(code, {
                     output: {
                         preamble: output.banner,
                         ascii_only: true
                     }
                 }).code;
-                return write(output.output, minified, true);
+                return write(output.file, minified, true);
             } else {
-                return write(output.output, code);
+                return write(output.file, code);
             }
         });
 }
